@@ -21,6 +21,28 @@
     </header>
     <main role="main">
         <!-- app goes here --> 
+        <!--Login page-->
+        <div class="loginPage" id="loginPage">
+            UserName: </br> <input type="text" id="loginUserName" /> </br>
+            Password: </br> <input type="password" id="loginPassword" /> </br>
+            confirm Password: </br> <input type="password" id="confirmPassword"/></br>
+            <button class="loginPageButtons" id="loginButton" type="button">Login</button>
+            <button class="loginPageButtons" id="loginRegisterButton" type="button">Register</button>
+        </div>
+        <!--Register page initially disabled-->
+        <div class="registerPage" id="registerPage" style="display: none;">
+            Name: </br> <input type="text" id="registerName"/></br>
+            UserName: </br> <input type="text" id="registerUserName"/></br>
+            Password: </br> <input type="password" id="registerPassword"/></br>
+            Confirm Password: </br> <input type="password" id="registerConfirmPassword"/></br>
+            Email: </br> <input type="text" id="registerEmail"/></br>
+            <button class="registerPageButtons" type="submit" id="registerButton">Submit</button></br>
+        </div>
+        <!--Feeds page-->
+        <div class="Feed" id="Feed">
+            <div class="userFeeds" id="userFeeds" style="display: none;">No Feeds yet!</div>
+            <div class="userFeedsShow" id="userFeedsShow" style="display: none;"></div>
+        </div>
     </main>
     <footer>
         <p>&copy; Quickpic</p>

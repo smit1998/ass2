@@ -46,3 +46,69 @@ footer {
 }
 
 /* Add your styles here */
+
+.loginPage {
+    width: 400px;
+    height: 230px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(80, 141, 233);
+    text-align: center;
+    border-radius: 10%;
+
+}
+
+.loginPageButtons {
+    margin-top: 5px;
+    border-radius: 25px;
+    background-color: rgb(255, 255, 255);
+}
+
+.registerPage {
+    width: 400px;
+    height: 350px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(80, 141, 233);
+    text-align: center;
+    border-radius: 10%;
+    display: none;
+}
+
+.registerPageButtons {
+    margin-top: 5px;
+    border-radius: 25px;
+    background-color: rgb(255, 255, 255);
+}
+
+.eachPost {
+    width: 800px;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    background-color: rgb(145, 178, 228);
+    border-radius: 25px;
+}
+
+.likeButton {
+    border-radius: 25px;
+    background-color:bisque;
+}
+
+.postCommentButton {
+    border-radius: 25px;
+    background-color: bisque;
+}
+
+.postLikedByButton {
+    border-radius: 25px;
+    background-color: bisque;
+}
+
+.commentedByButton {
+    border-radius: 25px;
+    background-color: bisque;
+}
