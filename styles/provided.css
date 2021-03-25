@@ -8,6 +8,10 @@ html, body {
     font-family: -apple-system, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
+#quickpicBanner {
+    margin-left: 700px;
+}
+
 .banner {
     display: flex;
     flex-direction: row;
@@ -37,14 +41,6 @@ footer {
     padding: 0;
 }
 
-.nav-item {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    margin: auto;
-    padding: 5px;
-    display: inline;
-    list-style-type: none;
-}
-
 /* Add your styles here */
 
 .loginPage {
@@ -61,7 +57,7 @@ footer {
 .loginPageButtons {
     margin-top: 5px;
     border-radius: 25px;
-    background-color: rgb(255, 255, 255);
+    background-color: bisque;
 }
 
 .registerPage {
@@ -78,7 +74,7 @@ footer {
 .registerPageButtons {
     margin-top: 5px;
     border-radius: 25px;
-    background-color: rgb(255, 255, 255);
+    background-color:bisque;
 }
 
 .eachPost {
@@ -93,22 +89,88 @@ footer {
     border-radius: 25px;
 }
 
-.likeButton {
+.postButton {
     border-radius: 25px;
     background-color:bisque;
 }
 
-.postCommentButton {
+.commentBox {
     border-radius: 25px;
     background-color: bisque;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.postLikedByButton {
+.userProfile {
+    width: 400px;
+    height: 120%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(114, 66, 248);
     border-radius: 25px;
-    background-color: bisque;
+    color: #fafafa;
+    text-align: center;
+    text-indent: 20px;
 }
 
-.commentedByButton {
-    border-radius: 25px;
+.followButton {
+    border-radius: 100%;
+    background-color: white;
+    margin-left: 750px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+#homeButton {
+    border-radius: 100%;
     background-color: bisque;
+    font-size: 30px;
+    margin-left: -1400px;
+}
+
+#authorProfile {
+    border-radius: 100%;
+    background-color: bisque;
+    font-size: 30px;
+    margin-top: 30px;
+    margin-left: 50px;
+}
+
+.makePost{
+    width: 800px;
+    height: 100px;
+    background-color: coral;
+    border-radius: 25px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.addPostButton {
+    border-radius: 25px;
+    background-color: white;
+    margin-left: 280px;
+    box-shadow: 2px black;
+}
+
+.editPostButton {
+    border-radius: 25px;
+    background-color: white;
+    margin-left: 20px;
+    box-shadow: 2px black;
+}
+
+.NewPost {
+    width: 300px;
+    height: 200px;
+    border-radius: 25px;
+    background-color: rgb(235, 115, 139);
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.newPostButton {
+    border-radius: 25px;
+    background-color:bisque;
+    margin-top: 20px;
 }
