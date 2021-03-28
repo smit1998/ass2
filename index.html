@@ -22,19 +22,19 @@
         <!-- app goes here --> 
         <!--Login page-->
         <div class="loginPage" id="loginPage">
-            UserName: </br> <input type="text" id="loginUserName" /> </br>
-            Password: </br> <input type="password" id="loginPassword" /> </br>
-            confirm Password: </br> <input type="password" id="confirmPassword"/></br>
+            UserName: </br> <input class="loginPageInput" type="text" id="loginUserName" /> </br>
+            Password: </br> <input class="loginPageInput" type="password" id="loginPassword" /> </br>
+            confirm Password: </br> <input class="loginPageInput" type="password" id="confirmPassword"/></br>
             <button class="loginPageButtons" id="loginButton" type="button">Login</button>
             <button class="loginPageButtons" id="loginRegisterButton" type="button">Register</button>
         </div>
         <!--Register page initially disabled-->
         <div class="registerPage" id="registerPage" style="display: none;">
-            Name: </br> <input type="text" id="registerName"/></br>
-            UserName: </br> <input type="text" id="registerUserName"/></br>
-            Password: </br> <input type="password" id="registerPassword"/></br>
-            Confirm Password: </br> <input type="password" id="registerConfirmPassword"/></br>
-            Email: </br> <input type="text" id="registerEmail"/></br>
+            Name: </br> <input class="registerPageinput" type="text" id="registerName"/></br>
+            UserName: </br> <input class="registerPageinput" type="text" id="registerUserName"/></br>
+            Password: </br> <input class="registerPageinput" type="password" id="registerPassword"/></br>
+            Confirm Password: </br> <input class="registerPageinput" type="password" id="registerConfirmPassword"/></br>
+            Email: </br> <input class="registerPageinput" type="text" id="registerEmail"/></br>
             <button class="registerPageButtons" type="submit" id="registerButton">Submit</button></br>
         </div>
         <!--Feeds page-->
@@ -43,10 +43,11 @@
                 <div class="makePost" id="makePost">
                     <button type="button" class="nav-item2" id="authorProfile">👤</button>
                     <button type="button" class="addPostButton" id="addPostButton">New Post</button>
+                    <button type="button" class="editPostButton" id="searchUserButton">🔎</button>
                     <button type="button" class="editPostButton" id="updateProfileButton">Update Profile</button>
                 </div>
             </div>
-            <div class="userFeeds" id="userFeeds" style="display: none;">No Feeds yet!</div>
+            <div class="userFeeds" id="userFeeds" style="display: none;">Not yet implemented!</div>
             <div class="userProfile" id="userProfile" style="display: none;"></div>
             <div class="NewPost" id="NewPost" style="display: none;">
                 Post Status: </br> <input type="text"  id="newPostStatus"/></br>
@@ -60,6 +61,10 @@
                 Password: </br> <input type="password" id="updateProfilePassword"/></br>
                 <button type="submit" class="newPostButton" id="updateProfileCancel">Cancel</button></br>
                 <button type="submit" class="newPostButton" id="updateProfileSubmit">Submit</button></br>
+            </div>
+            <div class="searchUser" id="searchUserDiv" style="display: none;">
+                Search: <input type="text" class="searchUserinput" id="searchUserInput"/>
+                <button type="button" class="editPostButton" id="searchCancel">Cancel</button>
             </div>
         </div>
     </main>

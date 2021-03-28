@@ -6,29 +6,8 @@ import { fileToDataUrl } from './helpers.js';
 // global varible
 var x = 0;
 var globalauthToken;
-// helper function for liked By button to get the names of people who liked it.
-function getUsernames(authenticationToken, likedByIds) {
-    let namesMap = new Map();
-    for(let i = 0; i < likedByIds.length; i++) {
-        const getusername = fetch('http://localhost:5000/user/?id=' + likedByIds[i], {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Token ' + authenticationToken,
-            'Content-Type': 'application/json'
-        }
-        }).then((data) => {
-            data.json().then((getusername) => {
-                namesMap.set('userName', getusername.username);
-            });
-        }).catch((error) => {
-            alert(error);
-        });
-    }
-    //////////////////////////////////////remove this line /////////
-    
-    return namesMap;
-}
 
+// get the user's id to follow/ unfollow the user.
 function getUserId(authenticationToken, followButton, authorName) {
     const getId = fetch('http://localhost:5000/user/?username=' + authorName, {
         method: 'GET',
@@ -37,9 +16,12 @@ function getUserId(authenticationToken, followButton, authorName) {
             'Content-Type': 'application/json'
         }
     }).then((data) => {
-        data.json().then((getId) => {
-            userFollow(authenticationToken, getId.username, followButton);
-        });
+        if(data.status == 200){
+            console.log('followed');
+            data.json().then((getId) => {
+                userFollow(authenticationToken, getId.username, followButton);
+            });
+        }
     }).catch((error) => {
         alert(error);
     });
@@ -83,8 +65,8 @@ function userFollow(authenticationToken, userToFollow, followButton) {
     }
 };
 
-// Like post
-function likePostFunction(likeButton, id, authenticationToken) {
+// Like the post
+function likePostFunction(likeButton, id, authenticationToken, likedByButton) {
     if(likeButton.innerText == "💗 Like"){
         likeButton.innerText = "Unlike";
         fetch('http://localhost:5000/post/like?id='+ id, {
@@ -96,7 +78,26 @@ function likePostFunction(likeButton, id, authenticationToken) {
                 body: JSON.stringify()
             }).then((data) => {
                 if(data.status == 200) {
-                    console.log("Post liked by You :)");
+
+                    const getUser = fetch('http://localhost:5000/user/', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Token ' + authenticationToken,
+                            'Content-Type': 'application/json',
+                        }
+                    }).then((data) => {
+                        if(data.status == 200) {
+                            data.json().then((getUser) => {
+                                if(likedByButton.innerText != null){
+                                    likedByButton.innerText = likedByButton.innerText + ", " + getUser.id;
+                                }
+                                else{
+                                    likedByButton.innerText = likedByButton.innerText + getUser.id;
+                                }
+                                console.log("Post liked by You :)");
+                            });
+                        }
+                    });
                 }    
             }).catch((error) => {
                 alert(error);
@@ -121,9 +122,8 @@ function likePostFunction(likeButton, id, authenticationToken) {
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 // function to load user's posts on the profile page given the id's of the posts
-function userPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv) {
+function userPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv, userIdOfPerson) {
     for(let i = 0; i < profilePosts.length; i++) {
         const newPostDiv = document.createElement("div");
         const newP1 = document.createElement("p");
@@ -160,8 +160,7 @@ function userPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv) 
         }).then((data) => {
             if(data.status == 200){
                 data.json().then((entirePost) => {
-                    //console.log(entirePost);
-                    newP2.innerText = "Posted At: " + entirePost.meta.published;
+                    newP2.innerText = "Posted At: " + entirePost.meta.published
 
                     newP4.id = "postLike" + entirePost.id;
                     newP4.style.display = "none";
@@ -184,7 +183,7 @@ function userPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv) 
                     likeButton.id = "postLikeButton" + entirePost.id;
                     likeButton.classList.add("postButton");
                     likeButton.onclick = () => {
-                        likePostFunction(likeButton, entirePost.id, globalauthToken);
+                        likePostFunction(likeButton, entirePost.id, globalauthToken, newP4);
                     };
 
                     // comment button (Works)
@@ -228,14 +227,8 @@ function userPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv) 
                     likedByButton.id = "postLikedByButton" + entirePost[i];
                     likedByButton.classList.add("postButton");
                     likedByButton.onclick = () => {
-                        
-                        let likedByListNames = getUsernames(globalauthToken, entirePost.meta.likes);
-                        //console.log("Names:" + likedByListNames);
-            /////////////////////////// THIS LIKE NOT WORKING/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        const mapEntries = likedByListNames.entries();
-                        //console.log(mapEntries.value);
 
-                        newP4.innerText = "Liked by: 👍 " + likedByListNames;
+                        newP4.innerText = "Liked by users with id: - " + entirePost[i].meta.likes;
 
                         if(newP4.style.display == "none") {
                             newP4.style.display = "block";
@@ -289,7 +282,6 @@ function userPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv) 
     }
     profilePage.appendChild(authorPostDiv);
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // User profile page for other users
 function userPorfile(authenticationToken, userNameOfPerson, userIdOfPerson) {
@@ -303,7 +295,14 @@ function userPorfile(authenticationToken, userNameOfPerson, userIdOfPerson) {
     const authorProfileFollowing = document.createElement('p');
     const profilePage = document.getElementById('userProfile');
     const feedsShowPage = document.getElementById('userFeedsShow');
-
+    
+    let followButton = document.createElement('button');
+        followButton.innerText = "✔️";
+        followButton.classList.remove("followButton");
+        followButton.classList.add("followButtonprofile");
+        followButton.onclick = () => {
+            getUserId(globalauthToken, followButton, userNameOfPerson);
+    };
     
     feedsShowPage.style.display = 'none';
     profilePage.style.display = 'block';
@@ -319,15 +318,16 @@ function userPorfile(authenticationToken, userNameOfPerson, userIdOfPerson) {
             data.json().then((authorProfile) => {
                 authorProfileName.innerText = authorProfile.name;
                 authorProfileEmail.innerText = authorProfile.email;
-                authorProfileFollowers.innerText = authorProfile.followed_num;
+                authorProfileFollowers.innerText = "Followers: " + authorProfile.followed_num;
                 //authorProfileFollowing = authorProfile.following.length;
-                userPostsDisplay(authorProfile.posts, profilePage, authorProfile.name, authorPostDiv);
+                userPostsDisplay(authorProfile.posts, profilePage, authorProfile.name, authorPostDiv, userIdOfPerson);
             });
         }
     }).catch((Error) => {
         alert(Error);
     });
 
+    authorProfileDiv.appendChild(followButton);
     authorProfileDiv.appendChild(authorProfileName);
     authorProfileDiv.appendChild(authorProfileEmail);
     authorProfileDiv.appendChild(authorProfileFollowers);
@@ -336,7 +336,6 @@ function userPorfile(authenticationToken, userNameOfPerson, userIdOfPerson) {
 };
 
 // feeds page starts here
-// complete this function after completing follows
 
 // helper function for showing all the posts
 function insertAfter(newNode, existingNode) {
@@ -376,13 +375,12 @@ function postLoop(feedsPosts, authToken, showFeeds) {
         newP1.id = feedsPosts[i].meta.author + "id";
         newP1.style.color = "white";
         newP1.onclick = () => {
-            //console.log(feedsPosts[i]);
             // disable feeds and show user the profile of the person
             showFeeds.style.display = "none";
             userPorfile(authToken, feedsPosts[i].meta.author, feedsPosts[i].id);
         }
 
-        newP2.innerText = "Posted At: " + feedsPosts[i].meta.published;
+        newP2.innerText = "Posted At: " + feedsPosts[i].meta.published
         
         newP4.id = "postLike" + feedsPosts[i].id;
         newP4.style.display = "none";
@@ -406,10 +404,10 @@ function postLoop(feedsPosts, authToken, showFeeds) {
         likeButton.id = "postLikeButton" + feedsPosts[i].id;
         likeButton.classList.add("postButton");
         likeButton.onclick = () => {
-            likePostFunction(likeButton, feedsPosts[i].id, authToken);
+            likePostFunction(likeButton, feedsPosts[i].id, authToken, newP4);
         };
 
-        // comment button (Works)
+        // comment button
         commentButton.type = "button";
         commentButton.innerText = "💬 𝘤𝘰𝘮𝘮𝘦𝘯𝘵";
         commentButton.id = "postCommentButton" + feedsPosts[i].id;
@@ -429,6 +427,8 @@ function postLoop(feedsPosts, authToken, showFeeds) {
                     body: JSON.stringify(commentWords)
                 }).then((data) => {
                     if(data.status == 200) {
+                        newP6.innerText = newP6.innerText + ", " + commentWords.comment;
+                        feedsPosts[i].comments.length =  feedsPosts[i].comments.length + 1;
                         document.getElementById("postCommentButton" + feedsPosts[i].id).value = '';
                         commentBox.style.display = 'none';
                         alert("comment has been added");
@@ -451,14 +451,8 @@ function postLoop(feedsPosts, authToken, showFeeds) {
         likedByButton.id = "postLikedByButton" + feedsPosts[i];
         likedByButton.classList.add("postButton");
         likedByButton.onclick = () => {
-            
-            let likedByListNames = getUsernames(authToken, feedsPosts[i].meta.likes);
-            //console.log("Names:" + likedByListNames);
-/////////////////////////// THIS LIKE NOT WORKING/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            const mapEntries = likedByListNames.entries();
-            //console.log(mapEntries.value);
 
-            newP4.innerText = "Liked by: 👍 " + likedByListNames;
+            newP4.innerText = "Liked by users with id: - " + feedsPosts[i].meta.likes;
 
             if(newP4.style.display == "none") {
                 newP4.style.display = "block";
@@ -585,7 +579,6 @@ document.getElementById('loginButton').addEventListener('click', () => {
         body: JSON.stringify(userLogin),
         }).then((data) => {
             if(data.status == 200) {
-                
                 data.json().then((loginResult) => {
                     globalauthToken = loginResult.token; // setting it to use it in all other functions
                     globalauthToken = loginResult.token;
@@ -597,10 +590,12 @@ document.getElementById('loginButton').addEventListener('click', () => {
 
                 let feeds = document.getElementById('userFeeds');
                 feeds.style.display = "block";
-
             } 
-        }).catch((error) => {
-            alert("Error");
+            else{
+                alert("Incorrect login details");
+            }
+        }).catch((Error) => {
+            alert(Error);
         });
     }
 });
@@ -614,7 +609,8 @@ document.getElementById('loginRegisterButton').addEventListener('click', () => {
     let registerPage = document.getElementById('registerPage');
     registerPage.style.display = "block";
 
-    document.getElementById('registerButton').addEventListener('click', () => {
+    document.getElementById('registerButton').addEventListener('click', (e) => {
+        e.preventDefault();
         const registerDetails = {
             "username" : document.getElementById('registerUserName').value,
             "password" : document.getElementById('registerPassword').value,
@@ -647,6 +643,9 @@ document.getElementById('loginRegisterButton').addEventListener('click', () => {
                     let feeds = document.getElementById('userFeeds');
                     feeds.style.display = "block";
                 }
+                else{
+                    alert("Username already exists, Please change a unique username.");
+                }
             }).catch ((Error) => {
                 alert(Error);
             });
@@ -654,6 +653,7 @@ document.getElementById('loginRegisterButton').addEventListener('click', () => {
     });
 });
 
+// Function to create new post
 document.getElementById("addPostButton").addEventListener('click', () => {
     const feedsPage = document.getElementById("userFeedsShow");
     feedsPage.style.display = "none";
@@ -673,22 +673,21 @@ document.getElementById("addPostButton").addEventListener('click', () => {
                 'Authorization': 'Token ' + globalauthToken,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(newPostBody)
+            body: JSON.stringify(newPostBody),
         }).then((data) => {
             if(data.status == 200) {
                 newPost.style.display = "none";
                 feedsPage.style.display = "block";
                 document.getElementById("newPostStatus").value = '';
                 document.getElementById('newPostImageSource').value = '';
-                alert("Post Posted");
             }
             else {
                 newPost.style.display = "none";
                 feedsPage.style.display = "block";
                 alert("Post Not uploaded, Try again!");
             }
-        }).catch((error) => {
-            alert("Error!");
+        }).catch((Error) => {
+            alert(Error);
         });
     });
 
@@ -698,6 +697,27 @@ document.getElementById("addPostButton").addEventListener('click', () => {
     });
 });
 
+// Search users by their username
+document.getElementById('searchUserButton').addEventListener('click', () => {
+    const searchDiv = document.getElementById('searchUserDiv');
+    searchDiv.style.display = 'block';
+    const feedsDiv = document.getElementById('userFeedsShow');
+    feedsDiv.style.display = 'none';
+
+    const userSearchInput = document.getElementById('searchUserInput');
+    userSearchInput.onblur = () => {
+        const user = {
+            'username': userSearchInput.value,
+        };
+        userPorfile(globalauthToken, user.username, 0);
+        searchDiv.style.display = 'none';
+    };
+
+    document.getElementById('searchCancel').addEventListener('click', () => {
+        searchDiv.style.display = 'none';
+        feedsDiv.style.display = 'block';
+    });
+});
 
 // Update profile details
 document.getElementById('updateProfileButton').addEventListener('click', () => {
@@ -744,6 +764,7 @@ document.getElementById('updateProfileButton').addEventListener('click', () => {
     });
 });
 
+// Function to delete a particular post
 function deletePost(authToken, postId) {
     fetch('http://localhost:5000/post/?id=' + postId, {
         method: 'DELETE',
@@ -760,8 +781,7 @@ function deletePost(authToken, postId) {
     });
 }
 
-
-///////////////////////////////////////////////////////////////
+// function to display user's profile
 function authorPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv) {
     for(let i = 0; i < profilePosts.length; i++) {
         const newPostDiv = document.createElement("div");
@@ -844,7 +864,7 @@ function authorPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv
         }).then((data) => {
             if(data.status == 200){
                 data.json().then((entirePost) => {
-                    newP2.innerText = "Posted At: " + entirePost.meta.published;
+                    newP2.innerText = "Posted At: " + entirePost.meta.published
 
                     newP4.id = "postLike" + entirePost.id;
                     newP4.style.display = "none";
@@ -867,7 +887,7 @@ function authorPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv
                     likeButton.id = "postLikeButton" + entirePost.id;
                     likeButton.classList.add("postButton");
                     likeButton.onclick = () => {
-                        likePostFunction(likeButton, entirePost.id, globalauthToken);
+                        likePostFunction(likeButton, entirePost.id, globalauthToken, newP4);
                     };
 
                     // comment button (Works)
@@ -909,14 +929,7 @@ function authorPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv
                     likedByButton.id = "postLikedByButton" + entirePost[i];
                     likedByButton.classList.add("postButton");
                     likedByButton.onclick = () => {
-                        
-                        let likedByListNames = getUsernames(globalauthToken, entirePost.meta.likes);
-                        //console.log("Names:" + likedByListNames);
-            /////////////////////////// THIS LIKE NOT WORKING/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        const mapEntries = likedByListNames.entries();
-                        //console.log(mapEntries.value);
-
-                        newP4.innerText = "Liked by: 👍 " + likedByListNames;
+                        newP4.innerText = "Liked by: 👍 " + entirePost.meta.likes;
 
                         if(newP4.style.display == "none") {
                             newP4.style.display = "block";
