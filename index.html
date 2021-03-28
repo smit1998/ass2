@@ -13,14 +13,60 @@
 <body>
     <!-- This is an example app structure, you can modify this as much as you choose --> 
     <header class="banner">
-        <h1>Quickpic</h1>
-        <ul class="nav">
-            <li class="nav-item">Item</li>
-            <li class="nav-item">Item</li>
-        </ul>
+        <h1 id="quickpicBanner">Quickpic</h1>
+        <div class="nav">
+            <button type="button" class="nav-item1" id="homeButton" >⌂</button>
+        </div>
     </header>
     <main role="main">
         <!-- app goes here --> 
+        <!--Login page-->
+        <div class="loginPage" id="loginPage">
+            UserName: </br> <input class="loginPageInput" type="text" id="loginUserName" /> </br>
+            Password: </br> <input class="loginPageInput" type="password" id="loginPassword" /> </br>
+            confirm Password: </br> <input class="loginPageInput" type="password" id="confirmPassword"/></br>
+            <button class="loginPageButtons" id="loginButton" type="button">Login</button>
+            <button class="loginPageButtons" id="loginRegisterButton" type="button">Register</button>
+        </div>
+        <!--Register page initially disabled-->
+        <div class="registerPage" id="registerPage" style="display: none;">
+            Name: </br> <input class="registerPageinput" type="text" id="registerName"/></br>
+            UserName: </br> <input class="registerPageinput" type="text" id="registerUserName"/></br>
+            Password: </br> <input class="registerPageinput" type="password" id="registerPassword"/></br>
+            Confirm Password: </br> <input class="registerPageinput" type="password" id="registerConfirmPassword"/></br>
+            Email: </br> <input class="registerPageinput" type="text" id="registerEmail"/></br>
+            <button class="registerPageButtons" type="submit" id="registerButton">Submit</button></br>
+        </div>
+        <!--Feeds page-->
+        <div class="Feed" id="Feed">
+            <div class="userFeedsShow" id="userFeedsShow" style="display: none;">
+                <div class="makePost" id="makePost">
+                    <button type="button" class="nav-item2" id="authorProfile">👤</button>
+                    <button type="button" class="addPostButton" id="addPostButton">New Post</button>
+                    <button type="button" class="editPostButton" id="searchUserButton">🔎</button>
+                    <button type="button" class="editPostButton" id="updateProfileButton">Update Profile</button>
+                </div>
+            </div>
+            <div class="userFeeds" id="userFeeds" style="display: none;">Not yet implemented!</div>
+            <div class="userProfile" id="userProfile" style="display: none;"></div>
+            <div class="NewPost" id="NewPost" style="display: none;">
+                Post Status: </br> <input type="text"  id="newPostStatus"/></br>
+                Image Source: </br> <input type="text" id="newPostImageSource"/></br>
+                <button type="submit" class="newPostButton" id="newPostCancel">Cancel</button></br>
+                <button type="submit" class="newPostButton" id="newPostSubmit">Submit</button></br>
+            </div>
+            <div class="updateProfile" id="updateProfile" style="display: none;">
+                Email: </br> <input type="text"  id="updateProfileEmail"/></br>
+                Name: </br> <input type="text" id="updateProfileName"/></br>
+                Password: </br> <input type="password" id="updateProfilePassword"/></br>
+                <button type="submit" class="newPostButton" id="updateProfileCancel">Cancel</button></br>
+                <button type="submit" class="newPostButton" id="updateProfileSubmit">Submit</button></br>
+            </div>
+            <div class="searchUser" id="searchUserDiv" style="display: none;">
+                Search: <input type="text" class="searchUserinput" id="searchUserInput"/>
+                <button type="button" class="editPostButton" id="searchCancel">Cancel</button>
+            </div>
+        </div>
     </main>
     <footer>
         <p>&copy; Quickpic</p>
