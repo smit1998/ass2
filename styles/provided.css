@@ -8,9 +8,6 @@ html, body {
     font-family: -apple-system, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-#quickpicBanner {
-    margin-left: 700px;
-}
 
 .banner {
     display: flex;
@@ -102,13 +99,11 @@ footer {
 }
 
 .userProfile {
-    width: 400px;
-    height: 120%;
+    width: 800px;
+    height: 100%;
     margin-left: auto;
     margin-right: auto;
-    background-color: rgb(114, 66, 248);
     border-radius: 25px;
-    color: #fafafa;
     text-align: center;
     text-indent: 20px;
 }
@@ -125,7 +120,7 @@ footer {
     border-radius: 100%;
     background-color: bisque;
     font-size: 30px;
-    margin-left: -1400px;
+    margin-right: 100px;
 }
 
 #authorProfile {
@@ -147,14 +142,14 @@ footer {
 
 .addPostButton {
     border-radius: 25px;
-    background-color: white;
+    background-color:bisque;
     margin-left: 280px;
     box-shadow: 2px black;
 }
 
 .editPostButton {
     border-radius: 25px;
-    background-color: white;
+    background-color:bisque;
     margin-left: 20px;
     box-shadow: 2px black;
 }
@@ -174,3 +169,156 @@ footer {
     background-color:bisque;
     margin-top: 20px;
 }
+
+.updateProfile {
+    width: 300px;
+    height: 250px;
+    border-radius: 25px;
+    background-color:rgb(180, 148, 255);
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.userProfilePost {
+    width: 800px;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(234, 253, 65);
+    border-radius: 25px;
+    color: #000000;
+    text-align: center;
+    text-indent: 20px;
+}
+
+.userProfilePosts {
+    width: 800px;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 25px;
+    color: #000000;
+    text-align: center;
+    text-indent: 20px;
+}
+
+.deletePostButton {
+    border-radius: 25px;
+    background-color:bisque;
+}
+
+@media only screen and (max-width:1024px) {
+    #homeButton {
+        border-radius: 100%;
+        background-color: bisque;
+        font-size: 30px;
+        margin-right: 100px;
+    }
+
+    .eachPost {
+        width: 700px;
+    }
+
+    .makePost{
+        width: 750px;
+    }
+
+    .followButton {
+        margin-left: 600px;
+    }
+
+}
+
+@media only screen and (max-width:770px) {
+    #homeButton {
+        border-radius: 100%;
+        background-color: bisque;
+        font-size: 30px;
+        margin-right: 10%;
+    }
+
+    .loginPage {
+        width: 50%;
+        height: 230px;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: rgb(80, 141, 233);
+        text-align: center;
+        border-radius: 10%;
+    }
+
+    .registerPage {
+        width: 50%;
+    }
+
+    .makePost{
+        width: 400px;
+    }
+
+    .eachPost {
+        width: 400px;
+    }
+
+    .followButton {
+        margin-left: 350px;
+    }
+
+    .addPostButton {
+        margin-left: auto;
+    }
+
+    .editPostButton {
+        margin-left: 20px;
+    }
+
+    .image {
+        width: 60%;
+    }
+}
+
+@media only screen and (max-width:350px) {
+    #homeButton {
+        border-radius: 100%;
+        background-color: bisque;
+        font-size: 30px;
+        margin-right: 10px;
+    }
+    .loginPage {
+        width: 200px;
+        height: 230px;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: rgb(80, 141, 233);
+        text-align: center;
+        border-radius: 10%;
+    }
+
+    .registerPage {
+        width: 90%;
+    }
+
+    .eachPost {
+        width: 300px;
+    }
+
+    .makePost{
+        width: 300px;
+    }
+
+    .followButton {
+        margin-left: 250px;
+    }
+
+    .addPostButton {
+        margin-left: auto;
+    }
+
+    .editPostButton {
+        margin-left: 0px;
+    }
+    .image {
+        width: 60%;
+    }
+}
+
