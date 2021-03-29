@@ -7,6 +7,49 @@ import { fileToDataUrl } from './helpers.js';
 var x = 0;
 var globalauthToken;
 
+// helper function for showing all the posts
+function insertAfter(newNode, existingNode) {
+    existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
+}
+
+// function to create error popUp
+function popUp(message, parent) {
+    const popUpDiv = document.createElement('div');
+    const popUpMessage = document.createElement('p');
+    const closeBtn = document.createElement('button');
+    const okBtn = document.createElement('button');
+    const mainDiv = document.getElementById('main');
+    popUpDiv.classList.add("Popup");
+    closeBtn.classList.add('errorBtn');
+    okBtn.classList.add('errorBtn');
+    parent.style.display = 'none';
+    closeBtn.id = "closeBtn";
+    closeBtn.innerText = "X";
+    
+    okBtn.id = 'Ok';
+    okBtn.innerText = "Close";
+
+    popUpMessage.innerText = message;
+
+    popUpDiv.appendChild(closeBtn);
+    popUpDiv.appendChild(popUpMessage);
+    popUpDiv.appendChild(okBtn);
+    mainDiv.appendChild(popUpDiv);
+    
+    popUpDiv.focus();
+
+    closeBtn.onclick = () => {
+        parent.style.display = 'block';
+        popUpDiv.style.display = 'none';
+        popUpDiv.blur();
+    }
+    okBtn.onclick = () => {
+        parent.style.display = 'block';
+        popUpDiv.style.display = 'none';
+        popUp.blur();
+    }  
+}
+
 // get the user's id to follow/ unfollow the user.
 function getUserId(authenticationToken, followButton, authorName) {
     const getId = fetch('http://localhost:5000/user/?username=' + authorName, {
@@ -22,8 +65,8 @@ function getUserId(authenticationToken, followButton, authorName) {
                 userFollow(authenticationToken, getId.username, followButton);
             });
         }
-    }).catch((error) => {
-        alert(error);
+    }).catch((Error) => {
+        alert(Error);
     });
 };
 
@@ -42,8 +85,8 @@ function userFollow(authenticationToken, userToFollow, followButton) {
             if(data.status == 200) {
                 alert("Unfollowed");
             }
-        }).catch((error) => {
-            alert(error);
+        }).catch((Error) => {
+            alert(Error);
         });
     }
     else{
@@ -59,14 +102,14 @@ function userFollow(authenticationToken, userToFollow, followButton) {
             if(data.status == 200) {
                 alert("Followed");
             }
-        }).catch((error) => {
-            alert(error);
+        }).catch((Error) => {
+            alert(Error);
         });
     }
 };
 
 // Like the post
-function likePostFunction(likeButton, id, authenticationToken, likedByButton) {
+function likePostFunction(likeButton, id, authenticationToken, likedByButton, showFeeds) {
     if(likeButton.innerText == "💗 Like"){
         likeButton.innerText = "Unlike";
         fetch('http://localhost:5000/post/like?id='+ id, {
@@ -99,8 +142,8 @@ function likePostFunction(likeButton, id, authenticationToken, likedByButton) {
                         }
                     });
                 }    
-            }).catch((error) => {
-                alert(error);
+            }).catch((Error) => {
+                popUp(Error, showFeeds);
             });
     }
     else {
@@ -116,8 +159,8 @@ function likePostFunction(likeButton, id, authenticationToken, likedByButton) {
             if(data.starts == 200) {
                 console.log("Post unliked");
             }
-        }).catch((err) => {
-            alert(err);
+        }).catch((Error) => {
+            popUp(Error, showFeeds);
         });
     }
 }
@@ -160,7 +203,8 @@ function userPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv, 
         }).then((data) => {
             if(data.status == 200){
                 data.json().then((entirePost) => {
-                    newP2.innerText = "Posted At: " + entirePost.meta.published
+                    let publishedTime = new Date(entirePost.meta.published * 1000).toDateString();
+                    newP2.innerText = "Posted on: " + publishedTime;
 
                     newP4.id = "postLike" + entirePost.id;
                     newP4.style.display = "none";
@@ -208,13 +252,12 @@ function userPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv, 
                                 if(data.status == 200) {
                                     document.getElementById( "postCommentButton" + entirePost.id).value = '';
                                     commentBox.style.display = 'none';
-                                    alert("comment has been added");
                                 }
                                 else{
-                                    alert("Please enter comment and than click outside the box!");
+                                    popUp("Please enter comment and than click outside the box!", profilePage);
                                 }
-                            }).catch((error) => {
-                                alert("Error: " + error);
+                            }).catch((Error) => {
+                                popUp(Error, profilePage);
                             });
                             const commentBoxReset = document.getElementById('commentBox'+entirePost.id);
                             commentBoxReset.value = "";
@@ -228,7 +271,7 @@ function userPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv, 
                     likedByButton.classList.add("postButton");
                     likedByButton.onclick = () => {
 
-                        newP4.innerText = "Liked by users with id: - " + entirePost[i].meta.likes;
+                        newP4.innerText = "Liked by users with id: - " + entirePost.meta.likes;
 
                         if(newP4.style.display == "none") {
                             newP4.style.display = "block";
@@ -256,11 +299,8 @@ function userPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv, 
                     newIMG.src = "data:image/jpeg;base64," + postImg;
                 });
             }
-            else{
-                alert("Post not got");
-            }
         }).catch((Error) => {
-            alert(Error);
+            popUp(Error, profilePage);
         });
 
         // append everything
@@ -324,7 +364,7 @@ function userPorfile(authenticationToken, userNameOfPerson, userIdOfPerson) {
             });
         }
     }).catch((Error) => {
-        alert(Error);
+        popUp(Error, profilePage);
     });
 
     authorProfileDiv.appendChild(followButton);
@@ -336,11 +376,6 @@ function userPorfile(authenticationToken, userNameOfPerson, userIdOfPerson) {
 };
 
 // feeds page starts here
-
-// helper function for showing all the posts
-function insertAfter(newNode, existingNode) {
-    existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
-}
 
 function postLoop(feedsPosts, authToken, showFeeds) {
     for(let i = 0; i < feedsPosts.length; i++) {
@@ -380,7 +415,8 @@ function postLoop(feedsPosts, authToken, showFeeds) {
             userPorfile(authToken, feedsPosts[i].meta.author, feedsPosts[i].id);
         }
 
-        newP2.innerText = "Posted At: " + feedsPosts[i].meta.published
+        let publishedTime = new Date(feedsPosts[i].meta.published * 1000).toDateString();
+        newP2.innerText = "Posted on: " + publishedTime;
         
         newP4.id = "postLike" + feedsPosts[i].id;
         newP4.style.display = "none";
@@ -404,7 +440,7 @@ function postLoop(feedsPosts, authToken, showFeeds) {
         likeButton.id = "postLikeButton" + feedsPosts[i].id;
         likeButton.classList.add("postButton");
         likeButton.onclick = () => {
-            likePostFunction(likeButton, feedsPosts[i].id, authToken, newP4);
+            likePostFunction(likeButton, feedsPosts[i].id, authToken, newP4, showFeeds);
         };
 
         // comment button
@@ -431,13 +467,12 @@ function postLoop(feedsPosts, authToken, showFeeds) {
                         feedsPosts[i].comments.length =  feedsPosts[i].comments.length + 1;
                         document.getElementById("postCommentButton" + feedsPosts[i].id).value = '';
                         commentBox.style.display = 'none';
-                        alert("comment has been added");
                     }
                     else{
-                        alert("Please enter comment and than click outside the box!");
+                        popUp("Please enter comment and than click outside the box!", showFeeds);
                     }
-                }).catch((error) => {
-                    alert("Error: " + error);
+                }).catch((Error) => {
+                    popUp(Error, showFeeds);
                 });
                 const commentBoxReset = document.getElementById('commentBox'+feedsPosts[i].id);
                 commentBoxReset.value = "";
@@ -547,12 +582,14 @@ function userFeeds(authToken, x) {
 
             })
         }
-    }).catch((error) =>  {
-        alert("Error!");
+    }).catch((Error) =>  {
+        let showFeeds = document.getElementById('userFeedsShow');
+        popUp(Error, showFeeds);
     });
 
 };
 
+// make the userprofile page visible
 function enableUserProfile() {
     const sideBox = document.getElementById('makePost');
     sideBox.style.display = 'block';
@@ -567,7 +604,7 @@ document.getElementById('loginButton').addEventListener('click', () => {
 
     let confirmPassword = document.getElementById('confirmPassword').value;
     if(userLogin.password != confirmPassword) {
-        alert("Password doesn't match");
+        popUp("Password doesn't match", document.getElementById('loginPage'));
     }
     else {
         const loginResult = fetch('http://localhost:5000/auth/login', {
@@ -581,7 +618,6 @@ document.getElementById('loginButton').addEventListener('click', () => {
             if(data.status == 200) {
                 data.json().then((loginResult) => {
                     globalauthToken = loginResult.token; // setting it to use it in all other functions
-                    globalauthToken = loginResult.token;
                     userFeeds(loginResult.token, 0);
                 })
                 //if data is success display feeds page
@@ -592,10 +628,10 @@ document.getElementById('loginButton').addEventListener('click', () => {
                 feeds.style.display = "block";
             } 
             else{
-                alert("Incorrect login details");
+                popUp("Incorrect login details", document.getElementById('loginPage'));
             }
         }).catch((Error) => {
-            alert(Error);
+            popUp(Error, document.getElementById('loginPage'));
         });
     }
 });
@@ -620,7 +656,7 @@ document.getElementById('loginRegisterButton').addEventListener('click', () => {
     
         let registerConfirmPass = document.getElementById('registerConfirmPassword').value;
         if(registerConfirmPass != registerDetails.password) {
-            alert("Passwords do not match!");
+            popUp("Passwords do not match!", document.getElementById('registerPage'));
         }
         else {
             const registerResult = fetch('http://localhost:5000/auth/signup', {
@@ -644,10 +680,10 @@ document.getElementById('loginRegisterButton').addEventListener('click', () => {
                     feeds.style.display = "block";
                 }
                 else{
-                    alert("Username already exists, Please change a unique username.");
+                    popUp("Please check your detials", document.getElementById('registerPage'));
                 }
             }).catch ((Error) => {
-                alert(Error);
+                popUp(Error, document.getElementById('registerPage'));
             });
         }
     });
@@ -682,12 +718,10 @@ document.getElementById("addPostButton").addEventListener('click', () => {
                 document.getElementById('newPostImageSource').value = '';
             }
             else {
-                newPost.style.display = "none";
-                feedsPage.style.display = "block";
-                alert("Post Not uploaded, Try again!");
+                popUp("Post Not uploaded, Try again!", document.getElementById('NewPost'));
             }
         }).catch((Error) => {
-            alert(Error);
+            popUp(Error, document.getElementById('NewPost'));
         });
     });
 
@@ -743,18 +777,16 @@ document.getElementById('updateProfileButton').addEventListener('click', () => {
             body: JSON.stringify(updateInfo)
         }).then((data) => {
             if(data.status == 200) {
-                alert("Your information is updated!");
                 feedsPage.style.display = 'block';
                 updateForm.style.display = 'none';
             }
             else {
                 feedsPage.style.display = 'block';
                 updateForm.style.display = 'none';
-
-                alert("not updated yet!");
+                popUp("not updated yet!", document.getElementById('updateProfile'));
             }
-        }).catch((error) => {
-            alert(error);
+        }).catch((Error) => {
+            popUp(Error, document.getElementById('updateProfile'));
         });
     });
 
@@ -765,7 +797,7 @@ document.getElementById('updateProfileButton').addEventListener('click', () => {
 });
 
 // Function to delete a particular post
-function deletePost(authToken, postId) {
+function deletePost(authToken, postId, profilePage) {
     fetch('http://localhost:5000/post/?id=' + postId, {
         method: 'DELETE',
         headers: {
@@ -774,10 +806,10 @@ function deletePost(authToken, postId) {
         }
     }).then((data) => {
         if(data.status == 200) {
-            alert("Post has been deleted");
+            popUp("Post has been deleted", profilePage);
         }
     }).catch((Error) => {
-        alert(Error);
+        popUp(Error, profilePage);
     });
 }
 
@@ -825,11 +857,10 @@ function authorPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv
                         if(data.status == 200) {
                             document.getElementById(profilePosts[i] + "editBox").value = '';
                             editBox.style.display = 'none';
-                            alert("Post editted successfully!");
                         }
                         
                     }).catch((Error) => {
-                        alert(Error);
+                        popUp(Error, profilePage);
                     });
             };
             
@@ -841,7 +872,7 @@ function authorPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv
         userDeletePost.classList.add('deletePostButton');
         userDeletePost.onclick = () => {
             //console.log('Post deleted');
-            deletePost(globalauthToken, profilePosts[i]);
+            deletePost(globalauthToken, profilePosts[i], profilePage);
         };
 
         commentBox.style.display = "none";
@@ -864,7 +895,8 @@ function authorPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv
         }).then((data) => {
             if(data.status == 200){
                 data.json().then((entirePost) => {
-                    newP2.innerText = "Posted At: " + entirePost.meta.published
+                    let publishedTime = new Date(entirePost.meta.published * 1000).toDateString();
+                    newP2.innerText = "Posted on: " + publishedTime;
 
                     newP4.id = "postLike" + entirePost.id;
                     newP4.style.display = "none";
@@ -910,13 +942,13 @@ function authorPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv
                                 body: JSON.stringify(commentWords)
                             }).then((data) => {
                                 if(data.status == 200) {
-                                    alert("comment has been added");
+                                    console.log("comment has been added");
                                 }
                                 else{
-                                    alert("Please enter comment and than click outside the box!");
+                                    popUp("Please enter comment and than click outside the box!", profilePage);
                                 }
-                            }).catch((error) => {
-                                alert("Error: " + error);
+                            }).catch((Error) => {
+                                popUp(Error, profilePage);
                             });
                             const commentBoxReset = document.getElementById('commentBox'+entirePost.id);
                             commentBoxReset.value = "";
@@ -958,10 +990,10 @@ function authorPostsDisplay(profilePosts, profilePage, authorName, authorPostDiv
                 });
             }
             else{
-                alert("Post not got");
+                popUp("Failed", profilePage);
             }
         }).catch((Error) => {
-            alert(Error);
+            popUp(Error, profilePage);
         });
 
         // append everything
@@ -1018,12 +1050,11 @@ document.getElementById('authorProfile').addEventListener('click', () => {
                 authorProfileName.innerText = authorProfile.name;
                 authorProfileEmail.innerText = authorProfile.email;
                 authorProfileFollowers.innerText = "Followers: " + authorProfile.followed_num;
-                //authorProfileFollowing = "Following: " + authorProfile.following.length;
                 authorPostsDisplay(authorProfile.posts, profilePage, authorProfile.name, authorPostDiv);
             });
         }
     }).catch((Error) => {
-        alert(Error);
+        popUp(Error, document.getElementById('userProfile'));
     });
 
     authorProfileDiv.appendChild(authorProfileName);
