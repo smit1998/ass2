@@ -51,7 +51,7 @@ function popUp(message, parent) {
 }
 
 // get the user's id to follow/ unfollow the user.
-function getUserId(authenticationToken, followButton, authorName) {
+function getUserId(authenticationToken, followButton, authorName, parent) {
     const getId = fetch('http://localhost:5000/user/?username=' + authorName, {
         method: 'GET',
         headers: {
@@ -62,16 +62,16 @@ function getUserId(authenticationToken, followButton, authorName) {
         if(data.status == 200){
             console.log('followed');
             data.json().then((getId) => {
-                userFollow(authenticationToken, getId.username, followButton);
+                userFollow(authenticationToken, getId.username, followButton, parent);
             });
         }
     }).catch((Error) => {
-        alert(Error);
+        popUp(Error, parent);
     });
 };
 
 // Follow/ Unfollow operation
-function userFollow(authenticationToken, userToFollow, followButton) {
+function userFollow(authenticationToken, userToFollow, followButton, parent) {
     if(followButton.innerText == "✔️") {
         followButton.innerText = "➕";
         fetch('http://localhost:5000/user/follow?username=' + userToFollow, {
@@ -83,7 +83,7 @@ function userFollow(authenticationToken, userToFollow, followButton) {
             body: JSON.stringify()
         }).then((data) => {
             if(data.status == 200) {
-                alert("Unfollowed");
+                console.log("Unfollowed");
             }
         }).catch((Error) => {
             alert(Error);
@@ -100,10 +100,10 @@ function userFollow(authenticationToken, userToFollow, followButton) {
             body: JSON.stringify()
         }).then((data) => {
             if(data.status == 200) {
-                alert("Followed");
+                console.log("Followed");
             }
         }).catch((Error) => {
-            alert(Error);
+            popUp(Error, parent);
         });
     }
 };
@@ -341,7 +341,7 @@ function userPorfile(authenticationToken, userNameOfPerson, userIdOfPerson) {
         followButton.classList.remove("followButton");
         followButton.classList.add("followButtonprofile");
         followButton.onclick = () => {
-            getUserId(globalauthToken, followButton, userNameOfPerson);
+            getUserId(globalauthToken, followButton, userNameOfPerson, profilePage);
     };
     
     feedsShowPage.style.display = 'none';
@@ -402,7 +402,7 @@ function postLoop(feedsPosts, authToken, showFeeds) {
         followButton.classList.add("followButton");
         followButton.onclick = () => {
             //console.log("Username of post: " + feedsPosts[i].meta.author);
-            getUserId(authToken, followButton, feedsPosts[i].meta.author);
+            getUserId(authToken, followButton, feedsPosts[i].meta.author, showFeeds);
         };
 
         // content of the post to be shown
